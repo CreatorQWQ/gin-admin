@@ -22,6 +22,18 @@ type UpdateReq struct {
 	Content string `json:"content"`
 }
 
+// Create godoc
+// @Summary 创建文章
+// @Description 需要登录，创建新文章，自动关联当前用户
+// @Tags 文章
+// @Security ApiKeyAuth
+// @Accept json
+// @Produce json
+// @Param Authorization header string true "Bearer <token>"
+// @Param body body handler.CreateReq true "文章信息"
+// @Success 200 {object} map[string]interface{} "创建成功"
+// @Failure 401 {object} map[string]interface{} "未授权"
+// @Router /api/articles [post]
 func (h *ArticleHandler) Create(c *gin.Context) {
 	var req CreateReq
 	if err := c.ShouldBindJSON(&req); err != nil {

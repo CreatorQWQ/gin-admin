@@ -2,12 +2,15 @@
 package main
 
 import (
+	_ "github.com/CreatorQWQ/gin-admin/docs"
 	"github.com/CreatorQWQ/gin-admin/internal/handler"
 	"github.com/CreatorQWQ/gin-admin/internal/middleware"
 	"github.com/CreatorQWQ/gin-admin/internal/model"
 	"github.com/CreatorQWQ/gin-admin/pkg/common"
 	"github.com/CreatorQWQ/gin-admin/pkg/response"
 	"github.com/gin-gonic/gin"
+	swaggerFiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
 func main() {
@@ -29,6 +32,7 @@ func main() {
 	// 路由组（后面会扩展）
 	api := r.Group("/api")
 	{
+		r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 		api.GET("/ping", handler.Ping)
 		api.POST("/register", handler.User.Register)
 		api.POST("/login", handler.User.Login)
