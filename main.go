@@ -1,13 +1,17 @@
 package main
 
-import "github.com/gin-gonic/gin"
+import (
+	"github.com/CreatorQWQ/gin-admin/pkg"
+	"github.com/gin-gonic/gin"
+)
 
 func main() {
 	r := gin.Default()
+	r.Use(gin.CustomRecovery(func(c *gin.Context, recovered any) {
+		pkg.Fail(c, 500, "internal error")
+	}))
 	r.GET("/ping", func(c *gin.Context) {
-		c.JSON(200, gin.H{
-			"message": "pong",
-		})
+		pkg.Success(c, gin.H{"message": "pong"})
 	})
 
 	r.Run(":8080")
