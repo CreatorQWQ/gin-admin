@@ -12,9 +12,11 @@ import (
 
 func main() {
 	common.InitDB() // 初始化数据库
+	common.InitRedis()
 
 	// 自动迁移（开发时用，生产慎用或用迁移工具）
 	common.DB.AutoMigrate(&model.User{})
+	common.DB.AutoMigrate(&model.Article{})
 
 	r := gin.Default()
 
@@ -35,7 +37,12 @@ func main() {
 		api.GET("/profile", middleware.Auth(), func(c *gin.Context) {
 			userID := c.GetUint("user_id")
 			response.Success(c, gin.H{"user_id": userID, "msg": "protected route"})
+
 		})
+		api.POST("/articles", middleware.Auth(), handler.Article.Create)
+		api.GET("/articles", middleware.Auth(), handler.Article.List) // 可根据需求去掉 Auth 开放列表
+		api.PUT("/articles/:id", middleware.Auth(), handler.Article.Update)
+		api.DELETE("/articles/:id", middleware.Auth(), handler.Article.Delete)
 	}
 
 	r.Run(":8080") // 或从配置读端口
