@@ -3,6 +3,7 @@ package main
 
 import (
 	"github.com/CreatorQWQ/gin-admin/internal/handler"
+	"github.com/CreatorQWQ/gin-admin/internal/middleware"
 	"github.com/CreatorQWQ/gin-admin/internal/model"
 	"github.com/CreatorQWQ/gin-admin/pkg/common"
 	"github.com/CreatorQWQ/gin-admin/pkg/response"
@@ -27,6 +28,14 @@ func main() {
 	api := r.Group("/api")
 	{
 		api.GET("/ping", handler.Ping)
+		api.POST("/register", handler.User.Register)
+		api.POST("/login", handler.User.Login)
+
+		// 示例保护路由（测试 auth 中间件）
+		api.GET("/profile", middleware.Auth(), func(c *gin.Context) {
+			userID := c.GetUint("user_id")
+			response.Success(c, gin.H{"user_id": userID, "msg": "protected route"})
+		})
 	}
 
 	r.Run(":8080") // 或从配置读端口
